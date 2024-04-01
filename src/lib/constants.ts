@@ -15,7 +15,7 @@ export const MOCK_FILTERS: ITextFilter[] = [
   },
   {
     label: "Contracts deployed",
-    renderText: "contracts deployed",
+    renderText: "contracts deployed are",
     description: "Amount of contracts deployed",
     type: "Range",
     options: [],

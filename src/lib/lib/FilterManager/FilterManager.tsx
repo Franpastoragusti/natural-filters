@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./filterManager.module.css";
 import { FilterSelector } from "../FilterSelector/filterSelector";
 import { FilterInput } from "../FilterInput/filterInput";
+import { OperatorSelector } from "../OperatorSelector/operatorSelector";
 
 interface IFilterManager {
   config: ITextFilter[];
@@ -17,17 +18,29 @@ export const FilterManager = ({ config }: IFilterManager) => {
     filters: [],
     operators: [],
   });
-  const [managerStatus, setManagerStatus] = useState(false);
+  const [isSelectorActive, setIsSelectorActive] = useState(false);
+  const [isOperatorActive, setIsOperatorActive] = useState(false);
   const [search, setSearch] = useState("");
 
   const onFilterSelected = (filter: ITextFilter) => {
     console.log("adawdwad")
-    setManagerStatus(false);
+    setIsSelectorActive(false);
     setFilterState({
       filters: [...filterState?.filters, filter],
       operators: filterState?.operators,
     });
-    console.log("onFilterSelected", filter);
+    setIsOperatorActive(true);
+  };
+
+  const onOperatorSelected = (operator: string) => {
+    if(operator !== "END"){
+      setFilterState({
+        filters: filterState?.filters,
+        operators: [...filterState?.operators, operator],
+      });
+    }
+    setIsOperatorActive(false);
+    setIsSelectorActive(operator !== "END");
   };
   const onSearch = (text: string) => {
     setSearch(text);
@@ -35,12 +48,19 @@ export const FilterManager = ({ config }: IFilterManager) => {
 
   return (
     <div className={styles.filterContainer}>
-      {!!managerStatus ? (
+      {!!isSelectorActive ? (
         <FilterSelector
           config={config}
           onSearch={(text) => onSearch(text)}
           onFilterSelected={(filter) => onFilterSelected(filter)}
           search={search}
+        />
+      ) : (
+        <></>
+      )}
+      {!!isOperatorActive ? (
+        <OperatorSelector
+          onSelected={(operator) => onOperatorSelected(operator)}
         />
       ) : (
         <></>
@@ -58,7 +78,14 @@ export const FilterManager = ({ config }: IFilterManager) => {
           });
         }}
         filters={filterState?.filters|| []}
-        onFocus={() => setManagerStatus(true)}
+        operators={filterState?.operators || []}
+        onFocus={() => {
+          if(filterState.filters.length > filterState.operators.length){
+            setIsOperatorActive(true)
+          }else{
+            setIsSelectorActive(true);
+          }
+        }}
       />
     </div>
   );
