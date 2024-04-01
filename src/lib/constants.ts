@@ -23,7 +23,7 @@ export const MOCK_FILTERS: ITextFilter[] = [
   },
   {
     label: "Include",
-    renderText: "include",
+    renderText: "include the ones that",
     description: "Include different options",
     type: "Selector",
     options: [
@@ -44,7 +44,7 @@ export const MOCK_FILTERS: ITextFilter[] = [
   },
   {
     label: "Exclude",
-    renderText: "exclude",
+    renderText: "exclude the ones that",
     description: "Exclude different options",
     type: "Selector",
     options: [
