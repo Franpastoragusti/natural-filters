@@ -52,7 +52,6 @@ export const FilterManager = ({ config }: IFilterManager) => {
       value:item.value || true,
       operator:filterState.operators[i],
     }))
-    console.log(results)
     return () => {
       
     }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./filterSelector.module.css";
 import { RangeView } from "./Views/RangeView/rangeView";
+import { SelectView } from "./Views/SelectView/selectView";
 interface IProps {
   config: ITextFilter[];
   onSearch: (text: string) => void;
@@ -17,7 +18,7 @@ export const FilterSelector = ({
 
   const onFilterClicked = (filter: ITextFilter) => {
     setActiveFilter(filter);
-    if (filter.type === "Range") {
+    if (filter.type !== "Checkbox") {
       return;
     }
     
@@ -59,6 +60,14 @@ export const FilterSelector = ({
       )}
       {activeFilter?.type === "Range" ? (
         <RangeView
+          item={activeFilter}
+          onFinish={(newFilter) => onFinishFilter(newFilter)}
+        />
+      ) : (
+        <></>
+      )}
+      {activeFilter?.type === "Selector" ? (
+        <SelectView
           item={activeFilter}
           onFinish={(newFilter) => onFinishFilter(newFilter)}
         />

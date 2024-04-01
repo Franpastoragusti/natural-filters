@@ -24,6 +24,10 @@ export const FilterInput = ({
         filter.value!
       )} ${filter.value!.replace(/\D/g, "")} ${operator}`;
     }
+    if (filter.type === "Selector") {
+      let selectedOption = filter.options?.find((option) => option.value=== filter.value);
+      return `${filter.renderText} ${selectedOption?.label} ${operator}`;
+    }
     return `${filter.renderText} ${operator}`;
   };
   const renderText =
