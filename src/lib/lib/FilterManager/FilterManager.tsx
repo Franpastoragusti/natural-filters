@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./filterManager.module.css";
 import { FilterSelector } from "../FilterSelector/filterSelector";
 import { FilterInput } from "../FilterInput/filterInput";
@@ -6,6 +6,7 @@ import { OperatorSelector } from "../OperatorSelector/operatorSelector";
 
 interface IFilterManager {
   config: ITextFilter[];
+  onFilterChanged:(e:any) => void
 }
 
 interface IFilterManagerState {
@@ -23,7 +24,6 @@ export const FilterManager = ({ config }: IFilterManager) => {
   const [search, setSearch] = useState("");
 
   const onFilterSelected = (filter: ITextFilter) => {
-    console.log("adawdwad")
     setIsSelectorActive(false);
     setFilterState({
       filters: [...filterState?.filters, filter],
@@ -46,35 +46,40 @@ export const FilterManager = ({ config }: IFilterManager) => {
     setSearch(text);
   };
 
+  useEffect(() => {
+    let results = filterState.filters.map((item, i) => ({
+      filter:item.id,
+      value:item.value || true,
+      operator:filterState.operators[i],
+    }))
+    console.log(results)
+    return () => {
+      
+    }
+  }, [filterState.filters, filterState.operators])
+  
+
   return (
-    <div className={styles.filterContainer}>
-      {!!isSelectorActive ? (
-        <FilterSelector
-          config={config}
-          onSearch={(text) => onSearch(text)}
-          onFilterSelected={(filter) => onFilterSelected(filter)}
-          search={search}
-        />
-      ) : (
-        <></>
-      )}
-      {!!isOperatorActive ? (
-        <OperatorSelector
-          onSelected={(operator) => onOperatorSelected(operator)}
-        />
-      ) : (
-        <></>
-      )}
+    <div className={styles.filterContainer} onKeyDown={(e) => console.log(e.key)}>
       <FilterInput
+        showCursor={isOperatorActive || isSelectorActive}
         onDelete={() => {
+          setIsOperatorActive(false)
+          setIsSelectorActive(false)
+          let isOperatorLatest= filterState?.operators.length >= filterState.filters.length;
           setFilterState({
-            filters: [
+            filters:isOperatorLatest ? filterState.filters: [
               ...filterState?.filters.splice(
                 0,
                 filterState?.filters.length - 1
               ),
             ],
-            operators: filterState?.operators,
+            operators:  [
+              ...filterState?.operators.splice(
+                0,
+                filterState?.operators.length - 1
+              ),
+            ],
           });
         }}
         filters={filterState?.filters|| []}
@@ -87,6 +92,23 @@ export const FilterManager = ({ config }: IFilterManager) => {
           }
         }}
       />
+      {!!isOperatorActive ? (
+        <OperatorSelector
+          onSelected={(operator) => onOperatorSelected(operator)}
+        />
+      ) : (
+        <></>
+      )}
+      {!!isSelectorActive ? (
+        <FilterSelector
+          config={config}
+          onSearch={(text) => onSearch(text)}
+          onFilterSelected={(filter) => onFilterSelected(filter)}
+          search={search}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

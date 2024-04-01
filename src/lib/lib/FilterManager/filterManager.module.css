@@ -4,9 +4,6 @@
     height: auto;
     position: relative;
 }
-.filterContainer textarea{
-    width: 98%;
-}
 .cursor{
     animation: blink 1s step-start 0s infinite;
     display: inline-block;

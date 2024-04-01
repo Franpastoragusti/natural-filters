@@ -1,20 +1,9 @@
 .selector{
    position: absolute;
-   top: 50px;
     width: 100%;
     margin-bottom: 8px;
-    border-radius: 8px;
+    margin-top: 20px;
+
     border: 1px solid white;
     height: 126px;
-}
-.searcher{
-    width: 98%;
-}
-.filterList{
-    overflow: auto;
-    height: 100px;
-    list-style: none;
-    text-align: left;
-    padding: 0;
-    margin: 0;
 }

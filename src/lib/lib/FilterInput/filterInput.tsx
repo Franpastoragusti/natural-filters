@@ -1,32 +1,59 @@
+import { useRef } from "react";
 import { operatorTranscription } from "../helpers/transcriptor";
-
+import styles from "./filterInput.module.css";
 interface IProps {
   filters: ITextFilter[];
   operators: string[];
   onDelete: () => void;
   onFocus: () => void;
+  showCursor: boolean;
 }
 
-export const FilterInput = ({ filters, onFocus, onDelete, operators }: IProps) => {
+export const FilterInput = ({
+  filters,
+  onFocus,
+  onDelete,
+  operators,
+  showCursor
+}: IProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-
-  const getRenderString = (filter:ITextFilter, operator = "") => {
-    if(filter.type === "Range"){
-      return `${filter.renderText} ${operatorTranscription(filter.value!)} ${filter.value!.replace(/\D/g, '')} ${operator}`
+  const getRenderString = (filter: ITextFilter, operator = "") => {
+    if (filter.type === "Range") {
+      return `${filter.renderText} ${operatorTranscription(
+        filter.value!
+      )} ${filter.value!.replace(/\D/g, "")} ${operator}`;
     }
-    return `${filter.renderText} ${operator}`
-  }
-  const renderText = filters.map((item, i) => getRenderString(item, operators[i])).join(' ') || "";
+    return `${filter.renderText} ${operator}`;
+  };
+  const renderText =
+    filters.map((item, i) => getRenderString(item, operators[i])).join(" ") ||
+    "";
   return (
-    <textarea
-      onClick={() => onFocus()}
-      value={`Give me projects that ${renderText}`}
-      onChange={() => null}
-      onKeyDown={(e) => {
-        if (e.key === "Backspace") {
-          onDelete();
-        }
+    <div
+      className={styles.inputContainer}
+      onClick={() => {
+        onFocus();
+        if (inputRef.current) inputRef.current.focus();
       }}
-    ></textarea>
+    >
+      <p>
+        {`Give me projects that ${renderText}`}
+        {showCursor ? <span className={styles.cursor}>|</span>:<></>}
+      </p>
+      <input
+        ref={inputRef}
+        type="text"
+        className={styles.input}
+        value={`Give me projects that ${renderText}`}
+        onChange={() => null}
+        onBlur={() => null}
+        onKeyDown={(e) => {
+          if (e.key === "Backspace") {
+            onDelete();
+          }
+        }}
+      ></input>
+    </div>
   );
 };
