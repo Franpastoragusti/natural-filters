@@ -1,0 +1,14 @@
+.filterContainer{
+    background-color:transparent;
+    width: 400px;
+    height: auto;
+    position: relative;
+}
+.filterContainer textarea{
+    width: 98%;
+}
+.cursor{
+    animation: blink 1s step-start 0s infinite;
+    display: inline-block;
+    margin-left: 5px;
+}

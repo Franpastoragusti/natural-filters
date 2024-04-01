@@ -1,0 +1,21 @@
+.rangeContainer{
+    display: flex;
+    flex-direction: column;
+}
+.rangeContainer p{
+    margin: 4px;
+}
+.save {
+    width: 100px;
+    margin: 0 auto;
+    margin-top: 8px;
+
+}
+.rangeInput{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
