@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./filterSelector.module.css";
 import { RangeView } from "./Views/RangeView/rangeView";
 import { SelectView } from "./Views/SelectView/selectView";
@@ -21,7 +20,7 @@ export const FilterSelector = ({
 
   const onFilterClicked = (filter: ITextFilter) => {
     setActiveFilter(filter);
-    if (filter.type !== "Checkbox" && filter.type !== "Custom") {
+    if (filter.type !== "Checkbox" && filter.type !== "Group") {
       return;
     }
     onFilterAdded(filter);
@@ -40,7 +39,7 @@ export const FilterSelector = ({
           />
           <ul className={styles.filterList}>
             {config
-              .filter((it) => it.label.includes(search))
+              .filter((it) => it.label.toLowerCase().includes(search.toLowerCase()))
               .map((item, i) => (
                 <li
                   key={`filter-${i}`}
