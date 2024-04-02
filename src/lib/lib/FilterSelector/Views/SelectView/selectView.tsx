@@ -6,7 +6,7 @@ interface IRangeProps {
   onFinish: (newFilter: ITextFilter) => void;
 }
 export const SelectView = ({ item, onFinish }: IRangeProps) => {
-  const [selectorValue, setSelectorValue] = useState<string>(item.options![0].value);
+  const [selectorValue, setSelectorValue] = useState<string>(item.value || item.options![0].value);
 
   return (
     <div className={styles.rangeContainer}>

@@ -7,6 +7,7 @@ interface IProps {
   onDelete: () => void;
   onFocus: () => void;
   onFilterClicked: (index: number) => void;
+  onSaveFilters:() => void
   showCursor: boolean;
 }
 
@@ -16,6 +17,7 @@ export const FilterInput = ({
   onDelete,
   onFilterClicked,
   operators,
+  onSaveFilters,
   showCursor
 }: IProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,6 +54,16 @@ export const FilterInput = ({
         }} key={i}>{" "}{it}{" "}</span>)}
         {showCursor ? <span className={styles.cursor}>|</span>:<></>}
       </p>
+      {filters.length > 0 ? <button
+        className={styles.save}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onSaveFilters()
+        }}
+      >
+        Save
+      </button>:<></>}
       <input
         ref={inputRef}
         type="text"

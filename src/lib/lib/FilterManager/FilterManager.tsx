@@ -3,31 +3,52 @@ import styles from "./filterManager.module.css";
 import { FilterSelector } from "../FilterSelector/filterSelector";
 import { FilterInput } from "../FilterInput/filterInput";
 import { OperatorSelector } from "../OperatorSelector/operatorSelector";
+import { v4 as uuidv4 } from "uuid";
+import { FilterSave } from "../FilterSave/filterSave";
 
 interface IFilterManager {
   config: ITextFilter[];
   onFilterChanged: (e: any) => void;
 }
 
-interface IFilterManagerState {
-  filters: ITextFilter[];
-  operators: string[];
-}
-
 export const FilterManager = ({ config }: IFilterManager) => {
-  const [filterState, setFilterState] = useState<IFilterManagerState>({
+  const [filterState, setFilterState] = useState<IFullFilter>({
     filters: [],
     operators: [],
   });
   const [isSelectorActive, setIsSelectorActive] = useState(false);
+  const [isSavingFilter, setIsSavingFilter] = useState(false);
   const [isOperatorActive, setIsOperatorActive] = useState(false);
   const [activeFilter, setActiveFilter] = useState<ITextFilter | null>(null);
+  const [customFilters, setCustomFilters] = useState<ITextFilter[]>([]);
+
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    let res = localStorage.getItem("text-to-filters");
+    if (!res) {
+      return;
+    }
+    let parsedRes = JSON.parse(res);
+    setCustomFilters(parsedRes);
+
+    return () => {};
+  }, []);
 
   const onFilterAdded = (filter: ITextFilter) => {
     setIsSelectorActive(false);
+    let isUpdate = filter.id.includes("__");
+    if (!isUpdate) {
+      filter.id = filter.id + "__" + uuidv4();
+    }
     setFilterState({
-      filters: [...filterState?.filters, filter],
+      filters: isUpdate
+        ? [
+            ...filterState?.filters.map((it) =>
+              it.id === filter.id ? filter : it
+            ),
+          ]
+        : [...filterState?.filters, filter],
       operators: filterState?.operators,
     });
     setActiveFilter(null);
@@ -73,17 +94,52 @@ export const FilterManager = ({ config }: IFilterManager) => {
     }));
     return () => {};
   }, [filterState.filters, filterState.operators]);
-  const onFilterClicked = (index:number)=>{
-    console.log(index)
-  }
-  console.log(isOperatorActive, isSelectorActive);
+
+  const onFilterEdit = (index: number) => {
+    if (filterState?.filters[index].type === "Checkbox") {
+      return;
+    }
+    setActiveFilter(filterState?.filters[index]);
+    setIsOperatorActive(false);
+    setIsSelectorActive(true);
+  };
+
+  const onSaveFilters = (name: string, description: string) => {
+    let id = uuidv4();
+    let saveFilter: ITextFilter = {
+      label: name,
+      renderText: "contracts deployed are",
+      description: description,
+      type: "Custom",
+      options: [],
+      id: `custom__${id}`,
+      items: {
+        filters: filterState?.filters,
+        operators: filterState?.operators,
+      },
+    };
+    localStorage.setItem(
+      "text-to-filters",
+      JSON.stringify([...customFilters, saveFilter])
+    );
+    setCustomFilters((current) => [...current, saveFilter]);
+    setIsSavingFilter(false);
+    setFilterState({
+      filters: [],
+      operators: [],
+    });
+  };
+
   return (
-    <div
-      className={styles.filterContainer}
-      onKeyDown={(e) => console.log(e.key)}
-    >
+    <div className={styles.filterContainer}>
       <FilterInput
-        onFilterClicked={(it) => onFilterClicked(it)}
+        onSaveFilters={() => {
+          setIsOperatorActive(false);
+          setIsSelectorActive(false);
+          setActiveFilter(null);
+          setIsSavingFilter(true);
+        }}
+        onFilterClicked={(it) => onFilterEdit(it)}
         showCursor={isOperatorActive || isSelectorActive}
         onDelete={() => onDelete()}
         filters={filterState?.filters || []}
@@ -105,13 +161,18 @@ export const FilterManager = ({ config }: IFilterManager) => {
       )}
       {!!isSelectorActive ? (
         <FilterSelector
-          config={config}
+          config={[...config, ...customFilters]}
           onSearch={(text) => onSearch(text)}
           onFilterAdded={(filter) => onFilterAdded(filter)}
           search={search}
           activeFilter={activeFilter}
           setActiveFilter={(it) => setActiveFilter(it)}
         />
+      ) : (
+        <></>
+      )}
+      {!!isSavingFilter ? (
+        <FilterSave onSaveFilters={(n, d) => onSaveFilters(n, d)} />
       ) : (
         <></>
       )}

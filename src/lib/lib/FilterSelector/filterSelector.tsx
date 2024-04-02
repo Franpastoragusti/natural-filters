@@ -24,7 +24,6 @@ export const FilterSelector = ({
     if (filter.type !== "Checkbox") {
       return;
     }
-    
     onFilterAdded(filter);
   };
 

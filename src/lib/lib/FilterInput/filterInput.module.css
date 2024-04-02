@@ -8,10 +8,21 @@
     width: 100%;
     border: 1px solid white;
     text-align: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
 
 }
 .cursor{
     animation: blink 1s step-start 0s infinite;
+}
+.save {
+    width: 100px;
+
+}
+.inputContainer p{
+    flex-grow: 1;
 }
 .filter:hover{
     font-weight: bold;
