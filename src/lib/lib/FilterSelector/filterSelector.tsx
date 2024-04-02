@@ -28,10 +28,6 @@ export const FilterSelector = ({
     onFilterAdded(filter);
   };
 
-  const onFinishFilter = (filter: ITextFilter) => {
-    setActiveFilter(null);
-    onFilterAdded(filter);
-  };
   console.log(activeFilter)
   return (
     <div className={styles.selector}>
@@ -64,7 +60,7 @@ export const FilterSelector = ({
       {activeFilter?.type === "Range" ? (
         <RangeView
           item={activeFilter}
-          onFinish={(newFilter) => onFinishFilter(newFilter)}
+          onFinish={(newFilter) => onFilterAdded(newFilter)}
         />
       ) : (
         <></>
@@ -72,7 +68,7 @@ export const FilterSelector = ({
       {activeFilter?.type === "Selector" ? (
         <SelectView
           item={activeFilter}
-          onFinish={(newFilter) => onFinishFilter(newFilter)}
+          onFinish={(newFilter) => onFilterAdded(newFilter)}
         />
       ) : (
         <></>

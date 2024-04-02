@@ -24,7 +24,7 @@ export const FilterManager = ({ config }: IFilterManager) => {
   const [activeFilter, setActiveFilter] = useState<ITextFilter | null>(null);
   const [search, setSearch] = useState("");
 
-  const onFilterSelected = (filter: ITextFilter) => {
+  const onFilterAdded = (filter: ITextFilter) => {
     setIsSelectorActive(false);
     setFilterState({
       filters: [...filterState?.filters, filter],
@@ -73,6 +73,9 @@ export const FilterManager = ({ config }: IFilterManager) => {
     }));
     return () => {};
   }, [filterState.filters, filterState.operators]);
+  const onFilterClicked = (index:number)=>{
+    console.log(index)
+  }
   console.log(isOperatorActive, isSelectorActive);
   return (
     <div
@@ -80,6 +83,7 @@ export const FilterManager = ({ config }: IFilterManager) => {
       onKeyDown={(e) => console.log(e.key)}
     >
       <FilterInput
+        onFilterClicked={(it) => onFilterClicked(it)}
         showCursor={isOperatorActive || isSelectorActive}
         onDelete={() => onDelete()}
         filters={filterState?.filters || []}
@@ -103,7 +107,7 @@ export const FilterManager = ({ config }: IFilterManager) => {
         <FilterSelector
           config={config}
           onSearch={(text) => onSearch(text)}
-          onFilterAdded={(filter) => onFilterSelected(filter)}
+          onFilterAdded={(filter) => onFilterAdded(filter)}
           search={search}
           activeFilter={activeFilter}
           setActiveFilter={(it) => setActiveFilter(it)}
