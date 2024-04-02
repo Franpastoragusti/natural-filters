@@ -13,7 +13,10 @@
 .cursor{
     animation: blink 1s step-start 0s infinite;
 }
-
+.filter:hover{
+    font-weight: bold;
+    cursor: pointer;
+}
 @keyframes blink {
     from, to { opacity: 1; }
     50% { opacity: 0; }

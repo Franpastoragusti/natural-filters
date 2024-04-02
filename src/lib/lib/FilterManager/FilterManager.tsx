@@ -46,6 +46,26 @@ export const FilterManager = ({ config }: IFilterManager) => {
     setSearch(text);
   };
 
+  const onDelete = () => {
+    setIsOperatorActive(false)
+    setIsSelectorActive(false)
+    let isOperatorLatest= filterState?.operators.length >= filterState.filters.length;
+    setFilterState({
+      filters:isOperatorLatest ? filterState.filters: [
+        ...filterState?.filters.splice(
+          0,
+          filterState?.filters.length - 1
+        ),
+      ],
+      operators:  [
+        ...filterState?.operators.splice(
+          0,
+          filterState?.operators.length - 1
+        ),
+      ],
+    });
+  }
+
   useEffect(() => {
     let results = filterState.filters.map((item, i) => ({
       filter:item.id,
@@ -62,25 +82,7 @@ export const FilterManager = ({ config }: IFilterManager) => {
     <div className={styles.filterContainer} onKeyDown={(e) => console.log(e.key)}>
       <FilterInput
         showCursor={isOperatorActive || isSelectorActive}
-        onDelete={() => {
-          setIsOperatorActive(false)
-          setIsSelectorActive(false)
-          let isOperatorLatest= filterState?.operators.length >= filterState.filters.length;
-          setFilterState({
-            filters:isOperatorLatest ? filterState.filters: [
-              ...filterState?.filters.splice(
-                0,
-                filterState?.filters.length - 1
-              ),
-            ],
-            operators:  [
-              ...filterState?.operators.splice(
-                0,
-                filterState?.operators.length - 1
-              ),
-            ],
-          });
-        }}
+        onDelete={() => onDelete()}
         filters={filterState?.filters|| []}
         operators={filterState?.operators || []}
         onFocus={() => {
