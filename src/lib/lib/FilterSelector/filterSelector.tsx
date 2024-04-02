@@ -21,7 +21,7 @@ export const FilterSelector = ({
 
   const onFilterClicked = (filter: ITextFilter) => {
     setActiveFilter(filter);
-    if (filter.type !== "Checkbox") {
+    if (filter.type !== "Checkbox" && filter.type !== "Custom") {
       return;
     }
     onFilterAdded(filter);
@@ -72,7 +72,6 @@ export const FilterSelector = ({
       ) : (
         <></>
       )}
-     
     </div>
   );
 };

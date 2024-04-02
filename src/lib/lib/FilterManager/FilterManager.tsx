@@ -37,6 +37,15 @@ export const FilterManager = ({ config }: IFilterManager) => {
 
   const onFilterAdded = (filter: ITextFilter) => {
     setIsSelectorActive(false);
+    if (filter.type === "Custom") {
+      let type = customFilters.find((f) => f.id === filter.id);
+      if (type?.items) {
+        setFilterState(type.items);
+      }
+      setActiveFilter(null);
+      setIsOperatorActive(true);
+      return;
+    }
     let isUpdate = filter.id.includes("__");
     if (!isUpdate) {
       filter.id = filter.id + "__" + uuidv4();
@@ -112,7 +121,7 @@ export const FilterManager = ({ config }: IFilterManager) => {
       description: description,
       type: "Custom",
       options: [],
-      id: `custom__${id}`,
+      id: `custom_${id}`,
       items: {
         filters: filterState?.filters,
         operators: filterState?.operators,
