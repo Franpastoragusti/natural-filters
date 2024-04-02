@@ -5,16 +5,19 @@ import { SelectView } from "./Views/SelectView/selectView";
 interface IProps {
   config: ITextFilter[];
   onSearch: (text: string) => void;
-  onFilterSelected: (id: ITextFilter) => void;
+  onFilterAdded: (id: ITextFilter) => void;
   search: string;
+  activeFilter:ITextFilter | null;
+  setActiveFilter:(filter:ITextFilter | null) => void;
 }
 export const FilterSelector = ({
   config,
   search,
   onSearch,
-  onFilterSelected,
+  onFilterAdded,
+  activeFilter,
+  setActiveFilter
 }: IProps) => {
-  const [activeFilter, setActiveFilter] = useState<ITextFilter | null>(null);
 
   const onFilterClicked = (filter: ITextFilter) => {
     setActiveFilter(filter);
@@ -22,14 +25,14 @@ export const FilterSelector = ({
       return;
     }
     
-    onFilterSelected(filter);
+    onFilterAdded(filter);
   };
 
   const onFinishFilter = (filter: ITextFilter) => {
     setActiveFilter(null);
-    onFilterSelected(filter);
+    onFilterAdded(filter);
   };
-
+  console.log(activeFilter)
   return (
     <div className={styles.selector}>
       {!activeFilter ? (
@@ -74,6 +77,7 @@ export const FilterSelector = ({
       ) : (
         <></>
       )}
+     
     </div>
   );
 };

@@ -32,6 +32,10 @@ export const FilterInput = ({
   };
   const renderText =
     filters.map((item, i) => getRenderString(item, operators[i]))
+
+  const onFilterClicked = (index:number) => {
+    console.log(filters[index])
+  }
   return (
     <div
       className={styles.inputContainer}
@@ -42,7 +46,7 @@ export const FilterInput = ({
     >
       <p>
         {`Give me projects that `}
-        {renderText.map((it,i) => <span className={styles.filter} key={i}>{" "}{it}{" "}</span>)}
+        {renderText.map((it,i) => <span className={styles.filter} onClick={() => onFilterClicked(i)} key={i}>{" "}{it}{" "}</span>)}
         {showCursor ? <span className={styles.cursor}>|</span>:<></>}
       </p>
       <input
