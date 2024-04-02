@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import styles from "./filterSave.module.css";
 interface IProps {
   onSaveFilters:(name:string, description:string)=> void

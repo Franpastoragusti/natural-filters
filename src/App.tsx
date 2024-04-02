@@ -17,7 +17,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <FilterManager config={MOCK_FILTERS} onFilterChanged={(e:any)=> console.log('onFilterChanged', e)} />
+        <FilterManager config={MOCK_FILTERS} onFilterChanged={(e:ITextFilterOutput[])=> console.log('onFilterChanged', e)} />
       </div>
     </>
   )

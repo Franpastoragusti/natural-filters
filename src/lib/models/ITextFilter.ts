@@ -10,6 +10,7 @@ interface ITextFilter {
 }
 interface ITextFilterOutput {
   id: string;
+  type: "Checkbox" | "Selector" | "Date" | "Range" | "Group";
   value: string | ITextFilterOutput[] | true;
   operator?: string;
 }

@@ -6,7 +6,6 @@ interface IRangeProps {
     onFinish: (newFilter: ITextFilter) => void;
   }
   export const RangeView = ({ item, onFinish }: IRangeProps) => {
-    console.log(item.value?.replace(/\d/g, ""))
     const [selectorValue, setSelectorValue] = useState<string>(item.value ? item.value.replace(/\d/g, ""): "==");
     const [inputValue, setInputValue] = useState<string>(item.value ? item.value.replace(/\D/g, ""): "");
   

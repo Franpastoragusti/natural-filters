@@ -25,8 +25,6 @@ export const FilterSelector = ({
     }
     onFilterAdded(filter);
   };
-
-  console.log(activeFilter)
   return (
     <div className={styles.selector}>
       {!activeFilter ? (

@@ -8,10 +8,10 @@ import { FilterSave } from "../FilterSave/filterSave";
 
 interface IFilterManager {
   config: ITextFilter[];
-  onFilterChanged: (e: any) => void;
+  onFilterChanged: (e: ITextFilterOutput[]) => void;
 }
 
-export const FilterManager = ({ config }: IFilterManager) => {
+export const FilterManager = ({ config , onFilterChanged}: IFilterManager) => {
   const [filterState, setFilterState] = useState<IFullFilter>({
     filters: [],
     operators: [],
@@ -36,16 +36,18 @@ export const FilterManager = ({ config }: IFilterManager) => {
   }, []);
 
   const onFilterAdded = (filter: ITextFilter) => {
+    setSearch("");
     setIsSelectorActive(false);
-    if (filter.type === "Custom") {
-      let type = customFilters.find((f) => f.id === filter.id);
-      if (type?.items) {
-        setFilterState(type.items);
-      }
-      setActiveFilter(null);
-      setIsOperatorActive(true);
-      return;
-    }
+    //TODO EDIT CUSTOM FILTER START WITH THIS
+    // if (filter.type === "Custom") {
+    //   let type = customFilters.find((f) => f.id === filter.id);
+    //   if (type?.items) {
+    //     setFilterState(type.items);
+    //   }
+    //   setActiveFilter(null);
+    //   setIsOperatorActive(true);
+    //   return;
+    // }
     let isUpdate = filter.id.includes("__");
     if (!isUpdate) {
       filter.id = filter.id + "__" + uuidv4();
@@ -96,13 +98,26 @@ export const FilterManager = ({ config }: IFilterManager) => {
   };
 
   useEffect(() => {
-    let results = filterState.filters.map((item, i) => ({
-      filter: item.id,
-      value: item.value || true,
-      operator: filterState.operators[i],
-    }));
+    const fromFilterToOutput = (it:ITextFilter, operator?:string):ITextFilterOutput => {
+      let isGroup = it.type === "Group";
+      let val: string | true | ITextFilterOutput[] = it.value || true;
+      if (!!isGroup && it.items) {
+        val = it.items.filters.map((inter, i) => fromFilterToOutput(inter, it.items?.operators[i]));
+      }
+      return {
+        id: it.id.split("__")[0],
+        value: val,
+        type: it.type,
+        operator,
+      }
+    }
+    
+    let results = filterState.filters.map((item, i) =>
+      fromFilterToOutput(item, filterState.operators[i])
+    );
+    onFilterChanged(results)
     return () => {};
-  }, [filterState.filters, filterState.operators]);
+  }, [filterState.filters]);
 
   const onFilterEdit = (index: number) => {
     if (filterState?.filters[index].type === "Checkbox") {
@@ -114,14 +129,14 @@ export const FilterManager = ({ config }: IFilterManager) => {
   };
 
   const onSaveFilters = (name: string, description: string) => {
-    let id = uuidv4();
+    let id = uuidv4().slice(0, 8);
     let saveFilter: ITextFilter = {
       label: name,
-      renderText: "contracts deployed are",
+      renderText: name,
       description: description,
-      type: "Custom",
+      type: "Group",
       options: [],
-      id: `custom_${id}`,
+      id: `group-${id}`,
       items: {
         filters: filterState?.filters,
         operators: filterState?.operators,
